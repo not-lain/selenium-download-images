@@ -10,25 +10,20 @@ wd = webdriver.Chrome(path)
 
 url = "https://www.mytek.tn/informatique/ordinateurs-portables/pc-gamer.html"
 
-def get_images_from_mytek(wd,delay,max_images,url=url):
-    def scrolldown(wd,delay):
-        wd.execute_script("window.scrollTo(0,document.body.scrollHeight);")
-        time.sleep(delay)
-        
+def get_images_from_mytek(wd, delay,class_name, url=url):
     wd.get(url)
-    image_urls= []
+    time.sleep(delay)
+    image_urls = []
     thumbnails = []
-    while len(image_urls) < max_images : 
-        print("GETTING IMAGES ...............")
-        scrolldown(wd, delay)
-        thumbnails = wd.find_elements(By.CLASS_NAME,"product-image-photo")
-        for image in thumbnails[len(image_urls):max_images]:
-            if image.get_attribute('src') and "http" in image.get_attribute('src') : 
-                image_url = image.get_attribute('src')
-                image_urls.append(image_url)
+    print("GETTING IMAGES ...............")
+    thumbnails = wd.find_elements(By.CLASS_NAME, class_name)
+    for image in thumbnails:
+        if image.get_attribute('src') and "http" in image.get_attribute('src'):
+            image_url = image.get_attribute('src')
+            image_urls.append(image_url)
     print(image_urls)
     return image_urls
-    
+
 
 
 
@@ -41,16 +36,18 @@ def download_image(download_path,url,file_name):
         with open(file_path,"wb") as f : 
             image.save(f,'JPEG')
         print('================')
-        print(f" {url} : DONE")
+        print(f" {url} \nDONE")
     except Exception as E : 
         print('================')
         print('Failed ',E)
         
 
+#test for download an image
+# download_image("./images/","https://mk-media.mytek.tn/media/catalog/product/cache/4635b69058c0dccf0c8109f6ac6742cc/8/1/81y4018qfe.jpg","test.jpg")
 
-download_image("./images/","https://mk-media.mytek.tn/media/catalog/product/cache/4635b69058c0dccf0c8109f6ac6742cc/8/1/81y4018qfe.jpg","test.jpg")
-
-image_urls = get_images_from_mytek(wd,1,10)
+#scraper
+url = "https://www.mytek.tn/informatique/ordinateurs-portables/pc-gamer.html"
+image_urls = get_images_from_mytek(wd, 1,"product-image-photo", url)
 for i in range(len(image_urls)):
     download_image("./images/",image_urls[i],f"{i}.jpg")
 print('ALLL DONE !!!!!!!!!!!!!')
