@@ -1,3 +1,3 @@
 # selenium-download-images
 
-a script to scrape images from websites 
+a script to download images from mytek website
